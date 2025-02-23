@@ -13,4 +13,4 @@ assignees: ''
 
 ## 🆘 Ayuda
 
-## ✅ Definición de hecho (DoD)
+## ✅ Definición de realizado (DoD)

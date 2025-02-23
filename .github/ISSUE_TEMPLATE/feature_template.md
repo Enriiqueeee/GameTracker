@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## 📝 Descripción
+## 📝 Descripcion
 
 ## 🛠️ Recursos
 
