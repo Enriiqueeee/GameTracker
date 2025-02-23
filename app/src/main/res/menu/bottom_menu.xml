@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/videogames"
+        android:title="@string/videogames"
+        android:icon="@drawable/ic_launcher_background" />
+    <item
+        android:id="@+id/played"
+        android:title="@string/played"
+        android:icon="@drawable/ic_launcher_background" />
+
+
+</menu>
