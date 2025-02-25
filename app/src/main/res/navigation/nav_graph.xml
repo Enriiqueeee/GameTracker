@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/videogames">
+
+    <fragment
+        android:id="@+id/videogames"
+        android:name="edu.iesam.gametracker.features.videogames.presentation.VideogamesFragment"
+        android:label="@string/videogames"
+        tools:layout="@layout/fragment_videogames" />
+
+    <fragment
+        android:id="@+id/played"
+        android:name="edu.iesam.gametracker.features.played.presentation.PlayedFragment"
+        android:label="@string/played"
+        tools:layout="@layout/fragment_played" />
+
+    <fragment
+        android:id="@+id/setting"
+        android:name="edu.iesam.gametracker.features.setting.presentation.SettingFragment"
+        android:label="@string/setting"
+        tools:layout="@layout/fragment_setting" />
+
+</navigation>

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GameTracker</string>
+
+    <string name="videogames">Videogames</string>
+    <string name="played">Played</string>
+    <string name="setting">Setting</string>
+
 </resources>
