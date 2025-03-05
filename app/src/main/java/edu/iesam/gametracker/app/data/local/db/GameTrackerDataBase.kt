@@ -3,7 +3,6 @@ package edu.iesam.gametracker.app.data.local.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import edu.iesam.gametracker.app.data.local.db.converters.ClassConverter
 import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesDao
 import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesEntity
 
@@ -15,7 +14,7 @@ import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesEntity
     exportSchema = false
 )
 
-@TypeConverters(ClassConverter::class)
+@TypeConverters()
 abstract class GameTrackerDataBase : RoomDatabase() {
     abstract fun videogamesDao(): VideogamesDao
 }
