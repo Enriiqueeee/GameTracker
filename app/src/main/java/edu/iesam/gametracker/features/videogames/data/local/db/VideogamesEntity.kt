@@ -1,6 +1,7 @@
 package edu.iesam.gametracker.features.videogames.data.local.db
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -15,8 +16,8 @@ class VideogamesEntity(
     @ColumnInfo(name = "background_image") val backgroundImage: String,
     @ColumnInfo(name = "rating") val rating: Double,
     @ColumnInfo(name = "playtime") val playtime: Int,
-    @ColumnInfo(name = "platforms") val platforms: List<PlatformsEntity>,
-    @ColumnInfo(name = "genres") val genres: List<GenresEntity>,
+    @Embedded(prefix = "platforms") val platforms: List<PlatformsEntity>,
+    @Embedded(prefix = "genres") val genres: List<GenresEntity>,
 )
 
 class PlatformsEntity(

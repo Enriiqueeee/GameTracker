@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
+import edu.iesam.gametracker.app.data.remote.apiCall
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.core.annotation.Single
 
@@ -7,10 +8,11 @@ import org.koin.core.annotation.Single
 class VideogamesRemoteDataSource(private val videogamesService: VideogamesService) {
 
     suspend fun getVideogames(): Result<List<Videogame>> {
-        return apiCall{
+        return apiCall {
             videogamesService.requestVideogames()
-            {.map {
-                it.toModel
+        }.map { videgomaes ->
+            videgomaes.map {
+                it.toModel()
             }
         }
     }
