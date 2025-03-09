@@ -16,7 +16,7 @@ class LocalModule {
         val db = Room.databaseBuilder(
             context,
             GameTrackerDataBase::class.java,
-            "gametracker-db"
+            "game-tracker-db"
         )
         db.fallbackToDestructiveMigration()
         return db.build()
