@@ -61,6 +61,18 @@
                 app:layout_constraintStart_toEndOf="@id/released"
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"/>
+            
+            <ImageView
+                android:id="@+id/start"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_star"
+                app:layout_constraintTop_toTopOf="@id/rating"
+                app:layout_constraintBottom_toBottomOf="@id/rating"
+                app:layout_constraintStart_toEndOf="@id/rating"
+                />
+            
+            
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
