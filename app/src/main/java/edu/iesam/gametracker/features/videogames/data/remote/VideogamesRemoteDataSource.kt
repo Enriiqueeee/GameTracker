@@ -10,8 +10,8 @@ class VideogamesRemoteDataSource(private val videogamesService: VideogamesServic
     suspend fun getVideogames(): Result<List<Videogame>> {
         return apiCall {
             videogamesService.requestVideogames()
-        }.map { videgomaes ->
-            videgomaes.map {
+        }.map { response ->
+            response.results.map {
                 it.toModel()
             }
         }
