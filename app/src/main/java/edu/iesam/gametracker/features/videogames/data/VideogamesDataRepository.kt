@@ -14,10 +14,11 @@ class VideogamesDataRepository(
 
     override suspend fun getVideogames(): Result<List<Videogame>> {
         val local = db.findAll()
-        return  local.onSuccess { videogames ->
-            if(videogames.isNotEmpty()){
-                Result.success(videogames)
-            }else{
+
+        return local.onSuccess { videogames ->
+            if (videogames.isNotEmpty()) {
+                return Result.success(videogames)
+            } else {
                 val remote = remote.getVideogames()
                 remote.onSuccess {
                     db.saveAll(it)

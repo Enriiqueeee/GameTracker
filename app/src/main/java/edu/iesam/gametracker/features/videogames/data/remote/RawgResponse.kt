@@ -1,5 +1,7 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
+import com.google.gson.annotations.SerializedName
+
 data class RawgResponse(
-    val results: List<VideogamesApiModel>
+    @SerializedName("results") val results: List<VideogamesApiModel>
 )

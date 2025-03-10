@@ -11,9 +11,7 @@ class VideogamesRemoteDataSource(private val videogamesService: VideogamesServic
         return apiCall {
             videogamesService.requestVideogames()
         }.map { response ->
-            response.results.map {
-                it.toModel()
-            }
+            response.results.map { it.toModel() }
         }
     }
 }
