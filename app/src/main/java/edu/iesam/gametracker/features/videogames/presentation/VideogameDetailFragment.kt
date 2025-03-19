@@ -1,7 +1,6 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,7 @@ class VideogameDetailFragment : Fragment() {
             imageDetail.loadUrl(videogame.backgroundImage)
             nameGame.text = videogame.name
             released.text = videogame.released
-            rating.text = videogame.rating.toString()
+            description.text =videogame.description
         }
     }
 

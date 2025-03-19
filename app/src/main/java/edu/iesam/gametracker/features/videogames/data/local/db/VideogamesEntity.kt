@@ -15,5 +15,6 @@ class VideogamesEntity(
     @ColumnInfo(name = "background_image") val backgroundImage: String,
     @ColumnInfo(name = "rating") val rating: Double,
     @ColumnInfo(name = "playtime") val playtime: Int,
+    @ColumnInfo(name = "description") val description: String
 )
 

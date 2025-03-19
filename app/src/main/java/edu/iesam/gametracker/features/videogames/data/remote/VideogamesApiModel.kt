@@ -9,4 +9,5 @@ data class VideogamesApiModel (
     @SerializedName("background_image") val backgroundImage: String,
     @SerializedName("rating") val rating: Double,
     @SerializedName("playtime") val playtime: Int,
+    @SerializedName("description") val description: String
 )
