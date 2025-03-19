@@ -29,15 +29,17 @@ class VideogamesDataRepository(
     }
 
     override suspend fun getVideogameDetail(videogameId: Int): Result<Videogame> {
-        val local = db.findById(videogameId)
-        return if (local.isSuccess && local.getOrNull() != null) {
-            Result.success(local.getOrNull()!!)
-        } else {
-            val remote = remote.getVideogameDetail(videogameId)
-            remote.onSuccess {
-                db.save(it)
+        val localVideogame = db.findById(videogameId)
+        if (localVideogame.isSuccess) {
+            val videogame = localVideogame.getOrNull()
+            if (videogame?.id == videogameId) {
+                return Result.success(videogame)
             }
-            return remote
         }
+        val remoteVideogame = remote.getVideogameDetail(videogameId)
+        remoteVideogame.onSuccess {
+            db.save(it)
+        }
+        return remoteVideogame
     }
 }

@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
+import android.util.Log
 import edu.iesam.gametracker.app.data.remote.apiCall
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.core.annotation.Single

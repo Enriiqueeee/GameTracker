@@ -18,7 +18,13 @@ class VideogamesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: VideogamesViewModel by viewModel()
-    private val videogamesAdapter = VideogamesAdapter()
+    private val videogamesAdapter by lazy {
+        VideogamesAdapter().apply {
+            setOnItemClickListener { videogameId ->
+                navigateToVideogameDetail(videogameId)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +46,6 @@ class VideogamesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
         viewModel.videogamesCreated()
-        videogamesAdapter.setOnItemClickListener { videogameId ->
-            val action = VideogamesFragmentDirections
-                .actionVideogamesToVideogameDetail(videogameId)
-            findNavController().navigate(action)
-        }
     }
 
     private fun setupObserver() {
@@ -57,6 +58,10 @@ class VideogamesFragment : Fragment() {
 
         }
         viewModel.uiState.observe(viewLifecycleOwner, videogameObserver)
+    }
+
+    private fun navigateToVideogameDetail(videogameId: Int) {
+        findNavController().navigate(VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId))
     }
 
     override fun onDestroyView() {
