@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.skeletonlayout)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation (libs.jsoup)
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.android)

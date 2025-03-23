@@ -1,9 +1,14 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
-import android.text.Html
 import edu.iesam.gametracker.features.videogames.domain.Videogame
+import org.jsoup.Jsoup
 
 fun VideogamesApiModel.toModel(): Videogame {
+
+    val cleanedDescription = this.description?.takeIf { it.isNotEmpty() }
+        ?.let { Jsoup.parse(it).text() } ?: "Descripción no disponible"
+
+
     return Videogame(
         this.id,
         this.name,
@@ -11,6 +16,6 @@ fun VideogamesApiModel.toModel(): Videogame {
         this.backgroundImage,
         this.rating,
         this.playtime,
-        Html.fromHtml(this.description ?: "", Html.FROM_HTML_MODE_LEGACY).toString()
+        description = cleanedDescription
     )
 }

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+
 const val VIDEOGAME_TABLE = "videogame"
 const val VIDEOGAME_ID = "id"
 

@@ -1,6 +1,5 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
-import android.util.Log
 import edu.iesam.gametracker.app.data.remote.apiCall
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.core.annotation.Single
@@ -18,10 +17,14 @@ class VideogamesRemoteDataSource(private val videogamesService: VideogamesServic
 
     suspend fun getVideogameDetail(videogameId: Int): Result<Videogame> {
         return apiCall {
-            videogamesService.requestVideogameDetail(videogameId)
+            val response = videogamesService.requestVideogameDetail(videogameId)
+            response
         }.map { response ->
-            response.results.firstOrNull()?.toModel()!!
+            val videogameApiModel =
+                response.results.firstOrNull() ?: throw Exception("Juego no encontrado")
+            videogameApiModel.toModel()
         }
     }
+
 
 }

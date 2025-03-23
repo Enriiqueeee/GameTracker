@@ -21,6 +21,8 @@ coil = "2.7.0"
 room-version = "2.6.1"
 skeletonlayout = "5.0.0"
 swiperefreshlayout = "1.2.0-beta01"
+jsoup = "1.15.4"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +50,7 @@ room-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "roo
 room-coroutines = { group = "androidx.room", name = "room-ktx", version.ref = "room-version" }
 skeletonlayout = { module = "com.faltenreich:skeletonlayout", version.ref = "skeletonlayout" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
 
 [plugins]

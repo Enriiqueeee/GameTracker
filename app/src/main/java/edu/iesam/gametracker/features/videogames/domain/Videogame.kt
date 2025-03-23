@@ -9,3 +9,4 @@ data class Videogame (
     val playtime: Int,
     val description: String
 )
+
