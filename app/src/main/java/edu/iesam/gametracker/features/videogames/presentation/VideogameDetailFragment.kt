@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import edu.iesam.gametracker.app.extensions.cleanHtml
 import edu.iesam.gametracker.app.extensions.loadUrl
 import edu.iesam.gametracker.databinding.FragmentVideogameDetailBinding
 import edu.iesam.gametracker.features.videogames.domain.Videogame
@@ -53,7 +52,8 @@ class VideogameDetailFragment : Fragment() {
             imageDetail.loadUrl(videogame.backgroundImage)
             nameGame.text = videogame.name
             playtime.text = videogame.playtime.toString()
-            description.text = videogame.description.cleanHtml()
+            released.text = videogame.released
+            description.text = videogame.description.toString()
         }
     }
 

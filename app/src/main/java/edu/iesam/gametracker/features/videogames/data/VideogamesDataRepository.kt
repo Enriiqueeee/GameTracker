@@ -15,18 +15,28 @@ class VideogamesDataRepository(
     override suspend fun getVideogames(): Result<List<Videogame>> {
         val local = db.findAll()
 
-        return local.onSuccess { videogames ->
-            if (videogames.isNotEmpty()) {
-                return Result.success(videogames)
-            } else {
-                val remote = remote.getVideogames()
-                remote.onSuccess {
-                    db.saveAll(it)
+        return local.fold(
+            onSuccess = { videogames ->
+                if (videogames.isNotEmpty()) {
+                    Result.success(videogames)
+                } else {
+                    remote.getVideogames().mapCatching { videogamesList ->
+                        videogamesList.map { videogame ->
+                            if (videogame.description.isEmpty() || videogame.description == "Descripción no disponible") {
+                                remote.getVideogameDetail(videogame.id).getOrNull() ?: videogame
+                            } else {
+                                videogame
+                            }
+                        }.also { updatedList ->
+                            db.saveAll(updatedList)
+                        }
+                    }
                 }
-                return remote
-            }
-        }
+            },
+            onFailure = { error -> Result.failure(error) }
+        )
     }
+
 
     override suspend fun getVideogameDetail(videogameId: Int): Result<Videogame> {
         val localVideogame = db.findById(videogameId)

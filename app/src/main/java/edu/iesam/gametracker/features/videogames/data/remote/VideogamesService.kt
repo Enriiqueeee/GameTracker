@@ -18,6 +18,6 @@ interface VideogamesService {
     suspend fun requestVideogameDetail(
         @Path("id") videogameId: Int,
         @Query("key") apiKey: String = "c2c4ac233f0e46eca79e7ab82b1bdbef"
-    ): Response<RawgResponse>
+    ): Response<VideogamesApiModel>
 }
 

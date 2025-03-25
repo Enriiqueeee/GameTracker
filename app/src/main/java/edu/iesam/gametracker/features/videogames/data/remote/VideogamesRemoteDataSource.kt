@@ -20,9 +20,7 @@ class VideogamesRemoteDataSource(private val videogamesService: VideogamesServic
             val response = videogamesService.requestVideogameDetail(videogameId)
             response
         }.map { response ->
-            val videogameApiModel =
-                response.results.firstOrNull() ?: throw Exception("Juego no encontrado")
-            videogameApiModel.toModel()
+            response.toModel()
         }
     }
 
