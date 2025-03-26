@@ -22,7 +22,7 @@ class VideogamesDataRepository(
                 } else {
                     remote.getVideogames().mapCatching { videogamesList ->
                         videogamesList.map { videogame ->
-                            if (videogame.description.isEmpty() || videogame.description == "Descripción no disponible") {
+                            if (videogame.description.isEmpty() || videogame.description == "null") {
                                 remote.getVideogameDetail(videogame.id).getOrNull() ?: videogame
                             } else {
                                 videogame
