@@ -13,28 +13,23 @@ class VideogamesDataRepository(
 ) : VideogameRepository {
 
     override suspend fun getVideogames(): Result<List<Videogame>> {
-        val local = db.findAll()
-
-        return local.fold(
-            onSuccess = { videogames ->
-                if (videogames.isNotEmpty()) {
-                    Result.success(videogames)
-                } else {
-                    remote.getVideogames().mapCatching { videogamesList ->
-                        videogamesList.map { videogame ->
-                            if (videogame.description.isEmpty() || videogame.description == "null") {
-                                remote.getVideogameDetail(videogame.id).getOrNull() ?: videogame
-                            } else {
-                                videogame
-                            }
-                        }.also { updatedList ->
-                            db.saveAll(updatedList)
+        return db.findAll().onSuccess { videogames ->
+            if (videogames.isNotEmpty()) {
+                return Result.success(videogames)
+            } else {
+                return remote.getVideogames().onSuccess { remoteList ->
+                    val updatedList = remoteList.map { videogame ->
+                        if (videogame.description.isEmpty() || videogame.description == "null") {
+                            remote.getVideogameDetail(videogame.id).getOrNull() ?: videogame
+                        } else {
+                            videogame
                         }
                     }
+                    db.saveAll(updatedList)
+                    return Result.success(updatedList)
                 }
-            },
-            onFailure = { error -> Result.failure(error) }
-        )
+            }
+        }
     }
 
 
