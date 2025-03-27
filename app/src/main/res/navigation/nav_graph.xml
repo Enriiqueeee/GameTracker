@@ -9,7 +9,22 @@
         android:id="@+id/videogames"
         android:name="edu.iesam.gametracker.features.videogames.presentation.VideogamesFragment"
         android:label="@string/videogames"
-        tools:layout="@layout/fragment_videogames" />
+        tools:layout="@layout/fragment_videogames">
+
+        <action
+            android:id="@+id/action_videogames_to_videogames_detail"
+            app:destination="@id/videogames_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/videogames_detail"
+        android:name="edu.iesam.gametracker.features.videogames.presentation.VideogameDetailFragment">
+
+        <argument
+            android:name="videogameId"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/played"

@@ -7,4 +7,6 @@ data class Videogame (
     val backgroundImage: String,
     val rating: Double,
     val playtime: Int,
+    val description: String
 )
+

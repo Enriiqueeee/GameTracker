@@ -10,5 +10,6 @@ fun VideogamesApiModel.toModel(): Videogame {
         this.backgroundImage,
         this.rating,
         this.playtime,
+        this.description.toString()
     )
 }

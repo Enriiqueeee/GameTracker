@@ -10,7 +10,7 @@ import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesEntity
     entities = [
         VideogamesEntity::class
     ],
-    version = 1,
+    version = 5,
     exportSchema = false
 )
 

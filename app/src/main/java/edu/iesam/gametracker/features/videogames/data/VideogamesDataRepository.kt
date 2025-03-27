@@ -10,21 +10,41 @@ import org.koin.core.annotation.Single
 class VideogamesDataRepository(
     private val db: VideogamesDbLocalDataSource,
     private val remote: VideogamesRemoteDataSource
-): VideogameRepository {
+) : VideogameRepository {
 
     override suspend fun getVideogames(): Result<List<Videogame>> {
-        val local = db.findAll()
-
-        return local.onSuccess { videogames ->
+        return db.findAll().onSuccess { videogames ->
             if (videogames.isNotEmpty()) {
                 return Result.success(videogames)
             } else {
-                val remote = remote.getVideogames()
-                remote.onSuccess {
-                    db.saveAll(it)
+                return remote.getVideogames().onSuccess { remoteList ->
+                    val updatedList = remoteList.map { videogame ->
+                        if (videogame.description.isEmpty() || videogame.description == "null") {
+                            remote.getVideogameDetail(videogame.id).getOrNull() ?: videogame
+                        } else {
+                            videogame
+                        }
+                    }
+                    db.saveAll(updatedList)
+                    return Result.success(updatedList)
                 }
-                return remote
             }
         }
+    }
+
+
+    override suspend fun getVideogameDetail(videogameId: Int): Result<Videogame> {
+        val localVideogame = db.findById(videogameId)
+        if (localVideogame.isSuccess) {
+            val videogame = localVideogame.getOrNull()
+            if (videogame?.id == videogameId) {
+                return Result.success(videogame)
+            }
+        }
+        val remoteVideogame = remote.getVideogameDetail(videogameId)
+        remoteVideogame.onSuccess {
+            db.save(it)
+        }
+        return remoteVideogame
     }
 }

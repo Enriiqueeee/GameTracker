@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+
 const val VIDEOGAME_TABLE = "videogame"
 const val VIDEOGAME_ID = "id"
 
@@ -15,5 +16,6 @@ class VideogamesEntity(
     @ColumnInfo(name = "background_image") val backgroundImage: String,
     @ColumnInfo(name = "rating") val rating: Double,
     @ColumnInfo(name = "playtime") val playtime: Int,
+    @ColumnInfo(name = "description") val description: String
 )
 

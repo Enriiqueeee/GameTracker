@@ -1,29 +1,33 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class VideogamesFragment() : Fragment() {
+class VideogamesFragment : Fragment() {
 
     private var _binding: FragmentVideogamesBinding? = null
     private val binding get() = _binding!!
 
-    private val videogamesAdapter = VideogamesAdapter()
-
     private val viewModel: VideogamesViewModel by viewModel()
+    private val videogamesAdapter by lazy {
+        VideogamesAdapter().apply {
+            setOnItemClickListener { videogameId ->
+                navigateToVideogameDetail(videogameId)
+            }
+        }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentVideogamesBinding.inflate(inflater, container, false)
@@ -31,13 +35,9 @@ class VideogamesFragment() : Fragment() {
         return binding.root
     }
 
-    private fun setupView(){
+    private fun setupView() {
         binding.apply {
-            videogameList.layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            videogameList.layoutManager = LinearLayoutManager(requireContext())
             videogameList.adapter = videogamesAdapter
         }
     }
@@ -54,17 +54,14 @@ class VideogamesFragment() : Fragment() {
                 videogamesAdapter.submitList(it)
             }
             uiState.errorApp?.let {
-                //pinto el error
-            } ?: kotlin.run {
-                //ocultar error
             }
-            if (uiState.isLoading) {
-                Log.d("@dev", "Cargando...")
-            } else {
-                Log.d("@dev", "Cargado")
-            }
+
         }
         viewModel.uiState.observe(viewLifecycleOwner, videogameObserver)
+    }
+
+    private fun navigateToVideogameDetail(videogameId: Int) {
+        findNavController().navigate(VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId))
     }
 
     override fun onDestroyView() {
