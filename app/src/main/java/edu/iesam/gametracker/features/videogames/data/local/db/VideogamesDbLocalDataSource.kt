@@ -33,4 +33,16 @@ class VideogamesDbLocalDataSource(private val videogamesDao: VideogamesDao) {
     suspend fun save(videogame: Videogame) {
         videogamesDao.save(videogame.toEntity())
     }
+
+    suspend fun insertFavorite(videogame: Videogame) {
+        videogamesDao.insertFavorite(videogame.toEntity())
+    }
+
+    suspend fun deleteFavorite(videogame: Videogame) {
+        videogamesDao.deleteFavorite(videogame.toEntity())
+    }
+
+    suspend fun getFavorites(): List<Videogame> {
+        return videogamesDao.getFavorites().map { it.toDomain() }
+    }
 }

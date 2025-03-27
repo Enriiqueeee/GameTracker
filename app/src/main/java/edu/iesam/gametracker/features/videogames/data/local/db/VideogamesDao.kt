@@ -1,6 +1,7 @@
 package edu.iesam.gametracker.features.videogames.data.local.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -19,5 +20,14 @@ interface VideogamesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(videogame: VideogamesEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFavorite(game: VideogamesEntity)
+
+    @Delete
+    suspend fun deleteFavorite(game: VideogamesEntity)
+
+    @Query("SELECT * FROM $VIDEOGAME_TABLE")
+    suspend fun getFavorites(): List<VideogamesEntity>
 
 }

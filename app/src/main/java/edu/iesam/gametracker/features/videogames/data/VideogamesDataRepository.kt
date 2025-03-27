@@ -47,4 +47,16 @@ class VideogamesDataRepository(
         }
         return remoteVideogame
     }
+
+    override suspend fun saveFavorite(videogame: Videogame) {
+        db.insertFavorite(videogame)
+    }
+
+    override suspend fun removeFavorite(videogame: Videogame) {
+        db.deleteFavorite(videogame)
+    }
+
+    override suspend fun getFavorites(): List<Videogame> {
+        return db.getFavorites()
+    }
 }
