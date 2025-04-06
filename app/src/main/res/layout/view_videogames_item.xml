@@ -35,7 +35,6 @@
                 android:id="@+id/name_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre del juego"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
@@ -47,7 +46,6 @@
                 android:id="@+id/released"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha de lanzamiento"
                 app:layout_constraintTop_toBottomOf="@id/name_game"
                 app:layout_constraintStart_toStartOf="parent"
                 android:paddingTop="4dp"/>
@@ -56,11 +54,10 @@
                 android:id="@+id/rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rating"
                 app:layout_constraintTop_toBottomOf="@id/name_game"
                 app:layout_constraintStart_toEndOf="@id/released"
                 android:paddingStart="16dp"
-                android:paddingTop="4dp"/>
+                android:paddingTop="4dp" />
             
             <ImageView
                 android:id="@+id/start"
