@@ -4,5 +4,6 @@
     <string name="videogames">Videogames</string>
     <string name="played">Played</string>
     <string name="setting">Setting</string>
+    <string name="save">Guardar</string>
 
 </resources>
