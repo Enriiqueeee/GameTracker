@@ -5,17 +5,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import edu.iesam.gametracker.app.domain.ErrorApp
+import edu.iesam.gametracker.features.videogames.domain.GetFavoriteVideogamesUseCase
 import edu.iesam.gametracker.features.videogames.domain.GetVideogamesUseCase
+import edu.iesam.gametracker.features.videogames.domain.ToggleFavoriteVideogameUseCase
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class VideogamesViewModel(private val getVideogamesUseCase: GetVideogamesUseCase) : ViewModel() {
+class VideogamesViewModel(
+    private val getVideogamesUseCase: GetVideogamesUseCase,
+    private val getFavoriteVideogamesUseCase: GetFavoriteVideogamesUseCase,
+    private val toggleFavoriteVideogameUseCase: ToggleFavoriteVideogameUseCase
+) : ViewModel() {
 
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
+
+    private val _favorites = MutableLiveData<List<Videogame>>()
+    val favorites: LiveData<List<Videogame>> get() = _favorites
 
     fun videogamesCreated() {
         _uiState.value = UiState(isLoading = true)
@@ -23,7 +32,7 @@ class VideogamesViewModel(private val getVideogamesUseCase: GetVideogamesUseCase
             val videogames = getVideogamesUseCase.invoke()
             _uiState.postValue(
                 UiState(
-                    videogame = videogames.getOrNull(),
+                    videogames = videogames.getOrNull(),
                     errorApp = videogames.exceptionOrNull() as ErrorApp?
                 )
             )
@@ -31,9 +40,24 @@ class VideogamesViewModel(private val getVideogamesUseCase: GetVideogamesUseCase
     }
 
 
-    data class UiState(
-        val isLoading: Boolean = false,
-        val errorApp: ErrorApp? = null,
-        val videogame: List<Videogame>? = null
-    )
+    fun loadFavorites() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getFavoriteVideogamesUseCase()
+            _favorites.postValue(result.getOrNull() ?: emptyList())
+        }
+    }
+
+    fun toggleFavorite(videogame: Videogame) {
+        viewModelScope.launch(Dispatchers.IO) {
+            toggleFavoriteVideogameUseCase(videogame)
+            loadFavorites()
+        }
+    }
 }
+
+data class UiState(
+    val isLoading: Boolean = false,
+    val errorApp: ErrorApp? = null,
+    val videogames: List<Videogame>? = null
+)
+

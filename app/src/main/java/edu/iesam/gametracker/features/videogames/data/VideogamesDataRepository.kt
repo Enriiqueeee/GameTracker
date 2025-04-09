@@ -47,4 +47,39 @@ class VideogamesDataRepository(
         }
         return remoteVideogame
     }
+
+    override suspend fun getFavoriteVideogames(): Result<List<Videogame>> {
+        return try {
+            db.getFavoriteVideogames()
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun saveFavorite(videogame: Videogame): Result<Unit> {
+        return try {
+            db.saveFavorite(videogame)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun removeFavorite(videogame: Videogame): Result<Unit> {
+        return try {
+            db.removeFavorite(videogame)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun toggleFavorite(videogame: Videogame): Result<Unit> {
+        return try {
+            db.toggleFavorite(videogame)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

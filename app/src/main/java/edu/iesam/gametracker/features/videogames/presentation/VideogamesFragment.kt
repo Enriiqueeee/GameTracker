@@ -11,15 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class VideogamesFragment : Fragment() {
 
     private var _binding: FragmentVideogamesBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: VideogamesViewModel by viewModel()
+
     private val videogamesAdapter by lazy {
-        VideogamesAdapter().apply {
+        VideogamesAdapter(favoriteIds = emptySet(), onFavoriteToggle = { videogame, newState ->
+            viewModel.toggleFavorite(videogame)
+        }).apply {
             setOnItemClickListener { videogameId ->
                 navigateToVideogameDetail(videogameId)
             }
@@ -29,7 +31,7 @@ class VideogamesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentVideogamesBinding.inflate(inflater, container, false)
         setupView()
         return binding.root
@@ -44,24 +46,32 @@ class VideogamesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObserver()
+        setupObservers()
         viewModel.videogamesCreated()
+        viewModel.loadFavorites()
     }
 
-    private fun setupObserver() {
-        val videogameObserver = Observer<VideogamesViewModel.UiState> { uiState ->
-            uiState.videogame?.let {
-                videogamesAdapter.submitList(it)
+    private fun setupObservers() {
+        viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            uiState.videogames?.let { videogames ->
+                videogamesAdapter.submitList(videogames)
             }
             uiState.errorApp?.let {
+                // Manejar error...
             }
+        })
 
-        }
-        viewModel.uiState.observe(viewLifecycleOwner, videogameObserver)
+        viewModel.favorites.observe(viewLifecycleOwner, Observer { favorites ->
+            val favoriteIds = favorites.map { it.id }.toSet()
+            videogamesAdapter.updateFavoriteIds(favoriteIds)
+        })
     }
 
+
     private fun navigateToVideogameDetail(videogameId: Int) {
-        findNavController().navigate(VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId))
+        findNavController().navigate(
+            VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId)
+        )
     }
 
     override fun onDestroyView() {
