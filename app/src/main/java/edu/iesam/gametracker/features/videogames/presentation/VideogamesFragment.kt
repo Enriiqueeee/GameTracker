@@ -18,9 +18,7 @@ class VideogamesFragment : Fragment() {
 
     private val viewModel: VideogamesViewModel by viewModel()
 
-    // Bandera para controlar el estado de la vista: completa o favoritos.
     private var isShowingFavorites = false
-    // Se guarda la lista completa para poder volver a ella cuando se desactive el modo favoritos.
     private var fullVideogamesList: List<Videogame>? = null
 
     private val videogamesAdapter by lazy {
@@ -35,7 +33,6 @@ class VideogamesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Permite al fragmento gestionar su propio menú (toolbar)
         setHasOptionsMenu(true)
     }
 
@@ -61,7 +58,6 @@ class VideogamesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        // Observer para la lista completa de videojuegos.
         viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
             uiState.videogames?.let { videogames ->
                 fullVideogamesList = videogames
@@ -70,29 +66,24 @@ class VideogamesFragment : Fragment() {
                 }
             }
             uiState.errorApp?.let {
-                // Aquí podrías manejar errores si fuese necesario.
             }
         })
 
-        // Observer para la lista de favoritos (obtenida desde Room).
         viewModel.favorites.observe(viewLifecycleOwner, Observer { favorites ->
             if (isShowingFavorites) {
                 videogamesAdapter.submitList(favorites)
             }
-            // Actualiza el estado de los íconos de favoritos en cada elemento.
             val favoriteIds = favorites.map { it.id }.toSet()
             videogamesAdapter.updateFavoriteIds(favoriteIds)
         })
     }
 
-    // Infla el menú de la toolbar a partir del recurso XML (en este caso, res/menu/toolbar_menu.xml)
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_menu, menu)
     }
 
-    // Al pulsar el botón (con id action_save) se alterna la vista:
-    // - Si NO se muestran los favoritos, activa ese modo, cambia el ícono y carga los favoritos.
-    // - Si ya se muestran los favoritos, vuelve a la lista completa y restablece el ícono.
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_save -> {
