@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
+import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
 import edu.iesam.gametracker.features.videogames.domain.Videogame
@@ -19,22 +21,7 @@ class VideogamesFragment : Fragment() {
     private val viewModel: VideogamesViewModel by viewModel()
 
     private var isShowingFavorites = false
-    private var fullVideogamesList: List<Videogame>? = null
-
-    private val videogamesAdapter by lazy {
-        VideogamesAdapter(favoriteIds = emptySet(), onFavoriteToggle = { videogame, newState ->
-            viewModel.toggleFavorite(videogame)
-        }).apply {
-            setOnItemClickListener { videogameId ->
-                navigateToVideogameDetail(videogameId)
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+    private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,34 +34,27 @@ class VideogamesFragment : Fragment() {
 
     private fun setupView() {
         binding.videogameList.layoutManager = LinearLayoutManager(requireContext())
+        videogamesAdapter.setOnItemClickListener { videGame ->
+            viewModel.toggleFavorite(videGame, isShowingFavorites)
+        }
         binding.videogameList.adapter = videogamesAdapter
+        (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
-        viewModel.videogamesCreated()
-        viewModel.loadFavorites()
+        viewModel.loadGames()
     }
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
             uiState.videogames?.let { videogames ->
-                fullVideogamesList = videogames
-                if (!isShowingFavorites) {
-                    videogamesAdapter.submitList(videogames)
-                }
+                videogamesAdapter.submitList(videogames)
             }
             uiState.errorApp?.let {
-            }
-        })
 
-        viewModel.favorites.observe(viewLifecycleOwner, Observer { favorites ->
-            if (isShowingFavorites) {
-                videogamesAdapter.submitList(favorites)
             }
-            val favoriteIds = favorites.map { it.id }.toSet()
-            videogamesAdapter.updateFavoriteIds(favoriteIds)
         })
     }
 
@@ -94,10 +74,11 @@ class VideogamesFragment : Fragment() {
                 } else {
                     isShowingFavorites = false
                     item.setIcon(R.drawable.ic_save)
-                    fullVideogamesList?.let { videogamesAdapter.submitList(it) }
+                    viewModel.loadGames()
                 }
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

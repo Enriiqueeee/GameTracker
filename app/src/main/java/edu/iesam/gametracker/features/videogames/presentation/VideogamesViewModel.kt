@@ -12,6 +12,7 @@ import edu.iesam.gametracker.features.videogames.domain.Videogame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import org.koin.core.context.loadKoinModules
 
 @KoinViewModel
 class VideogamesViewModel(
@@ -23,11 +24,8 @@ class VideogamesViewModel(
     private val _uiState = MutableLiveData<UiState>()
     val uiState: LiveData<UiState> get() = _uiState
 
-    private val _favorites = MutableLiveData<List<Videogame>>()
-    val favorites: LiveData<List<Videogame>> get() = _favorites
-
-    fun videogamesCreated() {
-        _uiState.value = UiState(isLoading = true)
+    fun loadGames() {
+        _uiState.postValue(UiState(isLoading = true))
         viewModelScope.launch(Dispatchers.IO) {
             val videogames = getVideogamesUseCase.invoke()
             _uiState.postValue(
@@ -43,14 +41,23 @@ class VideogamesViewModel(
     fun loadFavorites() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = getFavoriteVideogamesUseCase()
-            _favorites.postValue(result.getOrNull() ?: emptyList())
+            _uiState.postValue(
+                UiState(
+                    videogames = result.getOrNull(),
+                    errorApp = result.exceptionOrNull() as ErrorApp?
+                )
+            )
         }
     }
 
-    fun toggleFavorite(videogame: Videogame) {
+    fun toggleFavorite(videogame: Videogame, isFavoriteView: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             toggleFavoriteVideogameUseCase(videogame)
-            loadFavorites()
+            if (isFavoriteView) {
+                loadFavorites()
+            } else {
+                loadGames()
+            }
         }
     }
 }
@@ -58,6 +65,6 @@ class VideogamesViewModel(
 data class UiState(
     val isLoading: Boolean = false,
     val errorApp: ErrorApp? = null,
-    val videogames: List<Videogame>? = null
+    val videogames: List<GetVideogamesUseCase.VideoGameFeed>? = null
 )
 
