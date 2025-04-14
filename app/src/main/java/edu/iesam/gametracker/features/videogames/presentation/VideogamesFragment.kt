@@ -9,11 +9,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.faltenreich.skeletonlayout.Skeleton
+import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.appbar.MaterialToolbar
 import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
-import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class VideogamesFragment : Fragment() {
@@ -26,6 +27,8 @@ class VideogamesFragment : Fragment() {
     private var isShowingFavorites = false
     private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
 
+    private lateinit var skeleton: Skeleton
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,14 +39,17 @@ class VideogamesFragment : Fragment() {
     }
 
     private fun setupView() {
-        binding.videogameList.layoutManager = LinearLayoutManager(requireContext())
+        binding.apply {
+            videogameList.layoutManager = LinearLayoutManager(requireContext())
+            videogameList.adapter = videogamesAdapter
+            skeleton = videogameList.applySkeleton(R.layout.view_videogames_item, 8)
+        }
         videogamesAdapter.setOnItemClickListener { videGame ->
             viewModel.toggleFavorite(videGame, isShowingFavorites)
         }
         videogamesAdapter.setOnDetailClickListener { videogame ->
             navigateToVideogameDetail(videogame.id)
         }
-        binding.videogameList.adapter = videogamesAdapter
         (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
     }
 
@@ -83,6 +89,11 @@ class VideogamesFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            if (uiState.isLoading) {
+                skeleton.showSkeleton()
+            } else {
+                skeleton.showOriginal()
+            }
             uiState.videogames?.let { videogames ->
                 videogamesAdapter.submitList(videogames)
             }
