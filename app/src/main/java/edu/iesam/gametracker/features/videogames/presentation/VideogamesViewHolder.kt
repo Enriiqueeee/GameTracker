@@ -12,7 +12,11 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
 
     private val binding: ViewVideogamesItemBinding = ViewVideogamesItemBinding.bind(view)
 
-    fun bind(videogameFeed: GetVideogamesUseCase.VideoGameFeed, onClick: ((Videogame) -> Unit)?) {
+    fun bind(
+        videogameFeed: GetVideogamesUseCase.VideoGameFeed,
+        onClick: ((Videogame) -> Unit)?,
+        onDetailClick: ((Videogame) -> Unit)?,
+    ) {
 
 
         binding.apply {
@@ -29,6 +33,12 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
             onClick?.let {
                 btnsave.setOnClickListener {
                     onClick.invoke(videogameFeed.videogame)
+                }
+            }
+
+            onDetailClick?.let {
+                root.setOnClickListener {
+                    onDetailClick.invoke(videogameFeed.videogame)
                 }
             }
         }

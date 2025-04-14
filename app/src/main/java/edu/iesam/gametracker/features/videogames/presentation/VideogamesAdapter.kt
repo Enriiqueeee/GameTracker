@@ -11,9 +11,14 @@ class VideogamesAdapter() :
     ListAdapter<GetVideogamesUseCase.VideoGameFeed, VideogamesViewHolder>(VideogamesDiffUtil()) {
 
     private var onItemClick: ((Videogame) -> Unit)? = null
+    private var onDetailClick: ((Videogame) -> Unit)? = null
 
     fun setOnItemClickListener(listener: (Videogame) -> Unit) {
         onItemClick = listener
+    }
+
+    fun setOnDetailClickListener(listener: (Videogame) -> Unit) {
+        onDetailClick = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideogamesViewHolder {
@@ -23,6 +28,6 @@ class VideogamesAdapter() :
     }
 
     override fun onBindViewHolder(holder: VideogamesViewHolder, position: Int) {
-        holder.bind(currentList[position], onItemClick)
+        holder.bind(currentList[position], onItemClick, onDetailClick)
     }
 }

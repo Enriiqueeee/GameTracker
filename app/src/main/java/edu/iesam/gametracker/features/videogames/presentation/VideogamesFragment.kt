@@ -2,7 +2,10 @@ package edu.iesam.gametracker.features.videogames.presentation
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +40,9 @@ class VideogamesFragment : Fragment() {
         videogamesAdapter.setOnItemClickListener { videGame ->
             viewModel.toggleFavorite(videGame, isShowingFavorites)
         }
+        videogamesAdapter.setOnDetailClickListener { videogame ->
+            navigateToVideogameDetail(videogame.id)
+        }
         binding.videogameList.adapter = videogamesAdapter
         (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
     }
@@ -45,6 +51,34 @@ class VideogamesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         viewModel.loadGames()
+        setupMenu()
+    }
+
+    private fun setupMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.toolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_save -> {
+                        if (!isShowingFavorites) {
+                            isShowingFavorites = true
+                            menuItem.setIcon(R.drawable.ic_favorite_click)
+                            viewModel.loadFavorites()
+                        } else {
+                            isShowingFavorites = false
+                            menuItem.setIcon(R.drawable.ic_save)
+                            viewModel.loadGames()
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setupObservers() {
@@ -53,34 +87,8 @@ class VideogamesFragment : Fragment() {
                 videogamesAdapter.submitList(videogames)
             }
             uiState.errorApp?.let {
-
             }
         })
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_menu, menu)
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_save -> {
-                if (!isShowingFavorites) {
-                    isShowingFavorites = true
-                    item.setIcon(R.drawable.ic_favorite_click)
-                    viewModel.loadFavorites()
-                } else {
-                    isShowingFavorites = false
-                    item.setIcon(R.drawable.ic_save)
-                    viewModel.loadGames()
-                }
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun navigateToVideogameDetail(videogameId: Int) {
