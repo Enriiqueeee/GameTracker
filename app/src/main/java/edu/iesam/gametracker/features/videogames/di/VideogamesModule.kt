@@ -1,6 +1,7 @@
 package edu.iesam.gametracker.features.videogames.di
 
 import edu.iesam.gametracker.app.data.local.db.GameTrackerDataBase
+import edu.iesam.gametracker.features.videogames.data.local.db.FavoriteDao
 import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesDao
 import edu.iesam.gametracker.features.videogames.data.remote.VideogamesService
 import org.koin.core.annotation.ComponentScan
@@ -21,5 +22,10 @@ class VideogamesModule {
     @Single
     fun provideVideogameDao(db: GameTrackerDataBase): VideogamesDao {
         return db.videogamesDao()
+    }
+
+    @Single
+    fun provideFavoriteDao(db: GameTrackerDataBase): FavoriteDao {
+        return db.favoriteDao()
     }
 }

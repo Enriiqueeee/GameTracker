@@ -1,16 +1,20 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
+import edu.iesam.gametracker.MainActivity
+import edu.iesam.gametracker.R
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
+import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class VideogamesFragment : Fragment() {
 
@@ -18,50 +22,79 @@ class VideogamesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: VideogamesViewModel by viewModel()
-    private val videogamesAdapter by lazy {
-        VideogamesAdapter().apply {
-            setOnItemClickListener { videogameId ->
-                navigateToVideogameDetail(videogameId)
-            }
-        }
-    }
+
+    private var isShowingFavorites = false
+    private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentVideogamesBinding.inflate(inflater, container, false)
         setupView()
         return binding.root
     }
 
     private fun setupView() {
-        binding.apply {
-            videogameList.layoutManager = LinearLayoutManager(requireContext())
-            videogameList.adapter = videogamesAdapter
+        binding.videogameList.layoutManager = LinearLayoutManager(requireContext())
+        videogamesAdapter.setOnItemClickListener { videGame ->
+            viewModel.toggleFavorite(videGame, isShowingFavorites)
         }
+        videogamesAdapter.setOnDetailClickListener { videogame ->
+            navigateToVideogameDetail(videogame.id)
+        }
+        binding.videogameList.adapter = videogamesAdapter
+        (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObserver()
-        viewModel.videogamesCreated()
+        setupObservers()
+        viewModel.loadGames()
+        setupMenu()
     }
 
-    private fun setupObserver() {
-        val videogameObserver = Observer<VideogamesViewModel.UiState> { uiState ->
-            uiState.videogame?.let {
-                videogamesAdapter.submitList(it)
+    private fun setupMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.toolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_save -> {
+                        if (!isShowingFavorites) {
+                            isShowingFavorites = true
+                            menuItem.setIcon(R.drawable.ic_favorite_click)
+                            viewModel.loadFavorites()
+                        } else {
+                            isShowingFavorites = false
+                            menuItem.setIcon(R.drawable.ic_save)
+                            viewModel.loadGames()
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun setupObservers() {
+        viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+            uiState.videogames?.let { videogames ->
+                videogamesAdapter.submitList(videogames)
             }
             uiState.errorApp?.let {
             }
-
-        }
-        viewModel.uiState.observe(viewLifecycleOwner, videogameObserver)
+        })
     }
 
     private fun navigateToVideogameDetail(videogameId: Int) {
-        findNavController().navigate(VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId))
+        findNavController().navigate(
+            VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId)
+        )
     }
 
     override fun onDestroyView() {

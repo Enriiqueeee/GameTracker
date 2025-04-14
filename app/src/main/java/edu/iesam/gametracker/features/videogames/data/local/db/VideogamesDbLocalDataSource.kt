@@ -5,7 +5,7 @@ import org.koin.core.annotation.Single
 
 
 @Single
-class VideogamesDbLocalDataSource(private val videogamesDao: VideogamesDao) {
+class VideogamesDbLocalDataSource(private val videogamesDao: VideogamesDao, private val favoriteDao: FavoriteDao) {
 
     suspend fun findAll(): Result<List<Videogame>> {
         val videogames = videogamesDao.findAll()
@@ -32,5 +32,33 @@ class VideogamesDbLocalDataSource(private val videogamesDao: VideogamesDao) {
 
     suspend fun save(videogame: Videogame) {
         videogamesDao.save(videogame.toEntity())
+    }
+
+    suspend fun getFavoriteVideogames(): Result<List<Videogame>> {
+        val favoriteEntities = favoriteDao.getFavorites()
+        val favoriteVideogames = favoriteEntities.mapNotNull { favorite ->
+            videogamesDao.findById(favorite.id)?.toDomain()
+        }
+        return Result.success(favoriteVideogames)
+    }
+
+
+    suspend fun saveFavorite(videogame: Videogame) {
+        val favoriteEntity = FavoriteEntity(videogame.id, favorite = true)
+        favoriteDao.addFavorite(favoriteEntity)
+    }
+
+    suspend fun removeFavorite(videogame: Videogame) {
+        val favoriteEntity = FavoriteEntity(videogame.id, favorite = true)
+        favoriteDao.deleteFavorite(favoriteEntity)
+    }
+
+    suspend fun toggleFavorite(videogame: Videogame) {
+        val favoriteEntity = favoriteDao.findById(videogame.id)
+        if (favoriteEntity == null) {
+            saveFavorite(videogame)
+        } else {
+            removeFavorite(videogame)
+        }
     }
 }
