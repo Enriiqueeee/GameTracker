@@ -8,14 +8,14 @@
     </style>
 
     <style name="TextAppearance.GameTracker.Title" parent="TextAppearance.Material3.TitleLarge">
-        <item name="fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/agbalumo</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">@dimen/text_size_title</item>
     </style>
 
     <style name="TextAppearance.GameTracker.Subtitle" parent="TextAppearance.Material3.BodyMedium">
-        <item name="fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/agbalumo</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:textSize">@dimen/text_size_subtitle</item>
@@ -30,7 +30,7 @@
     </style>
 
     <style name="TextAppearance.GameTracker.Small" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/agbalumo</item>
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:textSize">@dimen/text_size_small</item>
