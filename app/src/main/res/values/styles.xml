@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GameTrackerCardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="android:layout_margin">@dimen/margin_medium</item>
+    </style>
+
+    <style name="TextAppearance.GameTracker.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textSize">@dimen/text_size_title</item>
+    </style>
+
+    <style name="TextAppearance.GameTracker.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_size_subtitle</item>
+    </style>
+
+    <style name="TextAppearance.GameTracker.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:lineSpacingExtra">@dimen/line_spacing</item>
+    </style>
+
+    <style name="TextAppearance.GameTracker.Small" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="CustomMaterialButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:paddingVertical">@dimen/button_padding_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+    </style>
+
+</resources>

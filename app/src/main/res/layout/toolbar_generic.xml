@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.MaterialToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.MaterialToolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
@@ -12,8 +13,5 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
+        style="@style/TextAppearance.GameTracker.Title" />
 </com.google.android.material.appbar.MaterialToolbar>
