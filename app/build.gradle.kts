@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,9 +7,21 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val localProps = Properties().apply {
+    rootProject.file("local.properties")
+        .takeIf { it.exists() }
+        ?.inputStream()
+        ?.use { load(it) }
+}
+val apiKey: String = localProps.getProperty("API_KEY") ?: ""
+
 android {
     namespace = "edu.iesam.gametracker"
     compileSdk = 35
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "edu.iesam.gametracker"
@@ -17,6 +31,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -39,6 +55,7 @@ android {
     viewBinding {
         enable = true
     }
+
 }
 
 dependencies {
