@@ -5,6 +5,8 @@
     <string name="played">Played</string>
     <string name="setting">Setting</string>
     <string name="save">Guardar</string>
-    <string name="timegame">Horas de Juego:</string>
+    <string name="playtime">Horas de Juego: %sH</string>
+    <string name="genres">Genres: %s</string>
+    <string name="released_date">Released date: %s</string>
 
 </resources>

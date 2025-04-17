@@ -10,7 +10,8 @@ fun Videogame.toEntity(): VideogamesEntity {
         this.backgroundImage,
         this.rating,
         this.playtime,
-        this.description
+        this.description,
+        this.genres
     )
 }
 
@@ -24,6 +25,7 @@ fun VideogamesEntity.toDomain(): Videogame{
         this.backgroundImage,
         this.rating,
         this.playtime,
-        this.description
+        this.description,
+        this.genres
     )
 }

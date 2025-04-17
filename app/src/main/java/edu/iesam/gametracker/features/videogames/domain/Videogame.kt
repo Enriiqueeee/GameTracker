@@ -7,6 +7,12 @@ data class Videogame (
     val backgroundImage: String,
     val rating: Double,
     val playtime: Int,
-    val description: String
+    val description: String,
+    val genres : List<Genre>
+)
+
+data class Genre(
+    val id: Int,
+    val name: String,
 )
 

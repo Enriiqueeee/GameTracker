@@ -9,5 +9,11 @@ data class VideogamesApiModel (
     @SerializedName("background_image") val backgroundImage: String,
     @SerializedName("rating") val rating: Double,
     @SerializedName("playtime") val playtime: Int,
-    @SerializedName("description_raw") val description: String?
+    @SerializedName("description_raw") val description: String?,
+    @SerializedName("genres") val genres: List<GenreApiModel>
+)
+
+data class GenreApiModel(
+    @SerializedName("id") val id : Int,
+    @SerializedName("name") val name: String,
 )

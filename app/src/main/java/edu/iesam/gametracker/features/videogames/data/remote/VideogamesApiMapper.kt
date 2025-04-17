@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.features.videogames.data.remote
 
+import edu.iesam.gametracker.features.videogames.domain.Genre
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 
 fun VideogamesApiModel.toModel(): Videogame {
@@ -10,6 +11,12 @@ fun VideogamesApiModel.toModel(): Videogame {
         this.backgroundImage,
         this.rating,
         this.playtime,
-        this.description.toString()
+        this.description.toString(),
+        this.genres.map {
+            Genre(
+                it.id,
+                it.name
+            )
+        }
     )
 }
