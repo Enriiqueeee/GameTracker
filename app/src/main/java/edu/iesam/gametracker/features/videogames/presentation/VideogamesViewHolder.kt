@@ -22,8 +22,16 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
         binding.apply {
             image.loadUrl(videogameFeed.videogame.backgroundImage)
             nameGame.text = videogameFeed.videogame.name
-            released.text = videogameFeed.videogame.released
+            released.text = root.context.getString(
+                R.string.released_date,
+                videogameFeed.videogame.released
+            )
             rating.text = videogameFeed.videogame.rating.toString()
+            val genreNames = videogameFeed.videogame.genres
+                .joinToString(", ") { it.name }
+
+            genres.text = itemView.context.getString(R.string.genres, genreNames)
+
 
             btnsave.setImageResource(
                 if (videogameFeed.isFavorite) R.drawable.ic_favorite_click
