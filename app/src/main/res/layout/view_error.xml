@@ -30,11 +30,4 @@
         android:layout_marginTop="8dp"
         tools:text="Descripción del error" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/action_retry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/reintentar" />
-
 </LinearLayout>
