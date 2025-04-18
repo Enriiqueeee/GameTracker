@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -12,7 +13,7 @@ class VideogamesAdapter() :
 
     private var onItemClick: ((Videogame) -> Unit)? = null
     private var onDetailClick: ((Videogame) -> Unit)? = null
-    private var onShareClick: ((Videogame) -> Unit)? = null
+    private var onShareClick: ((Videogame, bitmap: Bitmap?) -> Unit)? = null
 
     fun setOnItemClickListener(listener: (Videogame) -> Unit) {
         onItemClick = listener
@@ -22,9 +23,10 @@ class VideogamesAdapter() :
         onDetailClick = listener
     }
 
-    fun setOnShareClickListener(listener: (Videogame) -> Unit) {
+    fun setOnShareClickListener(listener: (Videogame, Bitmap?) -> Unit) {
         onShareClick = listener
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideogamesViewHolder {
         val view = LayoutInflater.from(parent.context)

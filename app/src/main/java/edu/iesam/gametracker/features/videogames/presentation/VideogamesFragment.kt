@@ -1,8 +1,14 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
+import android.R.id.shareText
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -17,8 +23,11 @@ import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.app.presentation.ContentShare
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
+import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+import java.io.FileOutputStream
 
 class VideogamesFragment : Fragment() {
 
@@ -63,15 +72,8 @@ class VideogamesFragment : Fragment() {
             setOnDetailClickListener { videogame ->
                 navigateToVideogameDetail(videogame.id)
             }
-            setOnShareClickListener { videogame ->
-                val chooserTitle = getString(R.string.share_chooser_title)
-
-                val shareBody = getString(
-                    R.string.share_body,
-                    videogame.name,
-                    videogame.released
-                )
-                contentShare.shareContent(chooserTitle, shareBody)
+            setOnShareClickListener { videogame, bitmap ->
+                shareVideogame(videogame, bitmap)
             }
         }
 
@@ -139,6 +141,31 @@ class VideogamesFragment : Fragment() {
         findNavController().navigate(
             VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId)
         )
+    }
+
+    private fun shareVideogame(videoGame: Videogame, bmp: Bitmap?) {
+        val text = "${videoGame.name}\n${videoGame.released}"
+        if (bmp != null) {
+            File(requireContext().cacheDir, "shared_images").apply { mkdirs() }
+                .resolve("share_${videoGame.id}.png")
+                .also { file ->
+                    FileOutputStream(file).use { out ->
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    }
+                }
+                .let { file ->
+                    FileProvider.getUriForFile(
+                        requireContext(),
+                        "${requireContext().packageName}.fileprovider",
+                        file
+                    )
+                }
+                .also { uri ->
+                    contentShare.shareContentWithImage(videoGame.name, text, uri)
+                }
+        } else {
+            contentShare.shareContent(videoGame.name, text)
+        }
     }
 
     override fun onDestroyView() {
