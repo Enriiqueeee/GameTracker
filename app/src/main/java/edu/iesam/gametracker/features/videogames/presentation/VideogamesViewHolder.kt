@@ -16,6 +16,7 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
         videogameFeed: GetVideogamesUseCase.VideoGameFeed,
         onClick: ((Videogame) -> Unit)?,
         onDetailClick: ((Videogame) -> Unit)?,
+        onShareClick: ((Videogame) -> Unit)?
     ) {
 
 
@@ -49,6 +50,11 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
                     onDetailClick.invoke(videogameFeed.videogame)
                 }
             }
+
+            btnShare.setOnClickListener {
+                onShareClick?.invoke(videogameFeed.videogame)
+            }
+
         }
     }
 }

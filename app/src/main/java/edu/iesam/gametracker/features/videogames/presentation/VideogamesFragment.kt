@@ -2,6 +2,7 @@ package edu.iesam.gametracker.features.videogames.presentation
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ShareCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -14,7 +15,9 @@ import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.appbar.MaterialToolbar
 import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
+import edu.iesam.gametracker.app.presentation.ContentShare
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class VideogamesFragment : Fragment() {
@@ -29,6 +32,8 @@ class VideogamesFragment : Fragment() {
 
     private lateinit var skeleton: Skeleton
 
+    private val contentShare: ContentShare by inject()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,16 +47,38 @@ class VideogamesFragment : Fragment() {
         binding.apply {
             videogameList.layoutManager = LinearLayoutManager(requireContext())
             videogameList.adapter = videogamesAdapter
+
             skeleton = videogameList.applySkeleton(R.layout.view_videogames_item, 8)
+
+            swiperefresh.setOnRefreshListener {
+                if (!isShowingFavorites) viewModel.loadGames()
+                else viewModel.loadFavorites()
+            }
         }
-        videogamesAdapter.setOnItemClickListener { videGame ->
-            viewModel.toggleFavorite(videGame, isShowingFavorites)
+
+        videogamesAdapter.apply {
+            setOnItemClickListener { videogame ->
+                viewModel.toggleFavorite(videogame, isShowingFavorites)
+            }
+            setOnDetailClickListener { videogame ->
+                navigateToVideogameDetail(videogame.id)
+            }
+            setOnShareClickListener { videogame ->
+                val chooserTitle = getString(R.string.share_chooser_title)
+
+                val shareBody = getString(
+                    R.string.share_body,
+                    videogame.name,
+                    videogame.released
+                )
+                contentShare.shareContent(chooserTitle, shareBody)
+            }
         }
-        videogamesAdapter.setOnDetailClickListener { videogame ->
-            navigateToVideogameDetail(videogame.id)
-        }
-        (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
+
+        (requireActivity() as MainActivity)
+            .findViewById<MaterialToolbar>(R.id.toolbar)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,6 +108,7 @@ class VideogamesFragment : Fragment() {
                         }
                         true
                     }
+
                     else -> false
                 }
             }
@@ -89,6 +117,11 @@ class VideogamesFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+
+            if (binding.swiperefresh.isRefreshing) {
+                binding.swiperefresh.isRefreshing = uiState.isLoading
+            }
+
             if (uiState.isLoading) {
                 skeleton.showSkeleton()
             } else {
