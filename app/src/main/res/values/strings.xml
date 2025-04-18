@@ -8,5 +8,7 @@
     <string name="playtime">Horas de Juego: %sH</string>
     <string name="genres">Genres: %s</string>
     <string name="released_date">Released date: %s</string>
+    <string name="share_chooser_title">Compartir videojuego</string>
+    <string name="share_body">🎮 %s 📅 Lanzamiento: %s</string>
 
 </resources>

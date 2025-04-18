@@ -1,7 +1,14 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
+import android.R.id.shareText
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -14,8 +21,13 @@ import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.appbar.MaterialToolbar
 import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
+import edu.iesam.gametracker.app.presentation.ContentShare
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
+import edu.iesam.gametracker.features.videogames.domain.Videogame
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+import java.io.FileOutputStream
 
 class VideogamesFragment : Fragment() {
 
@@ -28,6 +40,8 @@ class VideogamesFragment : Fragment() {
     private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
 
     private lateinit var skeleton: Skeleton
+
+    private val contentShare: ContentShare by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,16 +56,31 @@ class VideogamesFragment : Fragment() {
         binding.apply {
             videogameList.layoutManager = LinearLayoutManager(requireContext())
             videogameList.adapter = videogamesAdapter
+
             skeleton = videogameList.applySkeleton(R.layout.view_videogames_item, 8)
+
+            swiperefresh.setOnRefreshListener {
+                if (!isShowingFavorites) viewModel.loadGames()
+                else viewModel.loadFavorites()
+            }
         }
-        videogamesAdapter.setOnItemClickListener { videGame ->
-            viewModel.toggleFavorite(videGame, isShowingFavorites)
+
+        videogamesAdapter.apply {
+            setOnItemClickListener { videogame ->
+                viewModel.toggleFavorite(videogame, isShowingFavorites)
+            }
+            setOnDetailClickListener { videogame ->
+                navigateToVideogameDetail(videogame.id)
+            }
+            setOnShareClickListener { videogame, bitmap ->
+                shareVideogame(videogame, bitmap)
+            }
         }
-        videogamesAdapter.setOnDetailClickListener { videogame ->
-            navigateToVideogameDetail(videogame.id)
-        }
-        (requireActivity() as MainActivity).findViewById<MaterialToolbar>(R.id.toolbar)
+
+        (requireActivity() as MainActivity)
+            .findViewById<MaterialToolbar>(R.id.toolbar)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,6 +110,7 @@ class VideogamesFragment : Fragment() {
                         }
                         true
                     }
+
                     else -> false
                 }
             }
@@ -89,6 +119,11 @@ class VideogamesFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+
+            if (binding.swiperefresh.isRefreshing) {
+                binding.swiperefresh.isRefreshing = uiState.isLoading
+            }
+
             if (uiState.isLoading) {
                 skeleton.showSkeleton()
             } else {
@@ -106,6 +141,31 @@ class VideogamesFragment : Fragment() {
         findNavController().navigate(
             VideogamesFragmentDirections.actionVideogamesToVideogamesDetail(videogameId)
         )
+    }
+
+    private fun shareVideogame(videoGame: Videogame, bmp: Bitmap?) {
+        val text = "${videoGame.name}\n${videoGame.released}"
+        if (bmp != null) {
+            File(requireContext().cacheDir, "shared_images").apply { mkdirs() }
+                .resolve("share_${videoGame.id}.png")
+                .also { file ->
+                    FileOutputStream(file).use { out ->
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    }
+                }
+                .let { file ->
+                    FileProvider.getUriForFile(
+                        requireContext(),
+                        "${requireContext().packageName}.fileprovider",
+                        file
+                    )
+                }
+                .also { uri ->
+                    contentShare.shareContentWithImage(videoGame.name, text, uri)
+                }
+        } else {
+            contentShare.shareContent(videoGame.name, text)
+        }
     }
 
     override fun onDestroyView() {
