@@ -22,7 +22,7 @@
     </style>
 
     <style name="TextAppearance.GameTracker.Body" parent="TextAppearance.Material3.BodyLarge">
-        <item name="fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/belleza</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">@dimen/text_size_body</item>
