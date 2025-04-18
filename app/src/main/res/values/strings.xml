@@ -10,5 +10,22 @@
     <string name="released_date">Released date: %s</string>
     <string name="share_chooser_title">Compartir videojuego</string>
     <string name="share_body">🎮 %s 📅 Lanzamiento: %s</string>
+    <string name="reintentar">Reintentar Carga</string>
+
+    <!-- Errors -->
+    <!-- Server Error -->
+    <string name="title_error_server">Error en el servidor</string>
+    <string name="description_error_server">Se ha producido un error en la conexión con el servidor.
+     Por favor, vuelve a intentarlo pasado unos minutos.</string>
+
+    <!-- Connection Error -->
+    <string name="title_error_connection">Error en la conexión</string>
+    <string name="description_error_connection">Se ha producido un error en la conexión.
+     Por favor, verifica que tienes conexión a internet y vuelve a intentarlo.</string>
+
+    <!-- Unknown Error -->
+    <string name="title_error_unknown">Error desconocido</string>
+    <string name="description_error_unknown">Se ha producido un error desconocido en la aplicación.
+     Por favor, vuelve a intentarlo</string>
 
 </resources>
