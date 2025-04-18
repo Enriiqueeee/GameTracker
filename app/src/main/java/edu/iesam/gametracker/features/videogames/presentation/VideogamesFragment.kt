@@ -1,13 +1,8 @@
 package edu.iesam.gametracker.features.videogames.presentation
 
-import android.R.id.shareText
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
-import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -21,7 +16,10 @@ import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.appbar.MaterialToolbar
 import edu.iesam.gametracker.MainActivity
 import edu.iesam.gametracker.R
+import edu.iesam.gametracker.app.domain.ErrorApp
 import edu.iesam.gametracker.app.presentation.ContentShare
+import edu.iesam.gametracker.app.presentation.hide
+import edu.iesam.gametracker.app.presentation.views.ErrorAppUIFactory
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.android.ext.android.inject
@@ -42,6 +40,7 @@ class VideogamesFragment : Fragment() {
     private lateinit var skeleton: Skeleton
 
     private val contentShare: ContentShare by inject()
+    private val errorFactory: ErrorAppUIFactory by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,7 +117,7 @@ class VideogamesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.uiState.observe(viewLifecycleOwner, Observer { uiState ->
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
 
             if (binding.swiperefresh.isRefreshing) {
                 binding.swiperefresh.isRefreshing = uiState.isLoading
@@ -129,13 +128,30 @@ class VideogamesFragment : Fragment() {
             } else {
                 skeleton.showOriginal()
             }
-            uiState.videogames?.let { videogames ->
-                videogamesAdapter.submitList(videogames)
+
+            uiState.errorApp?.let { error ->
+                val errorUI = errorFactory.build(error)
+                binding.errorApp.render(errorUI)
+            } ?: run {
+                val list = uiState.videogames
+                when {
+                    list == null -> {
+                        binding.errorApp.hide()
+                    }
+                    list.isEmpty() -> {
+                        val emptyUI = errorFactory.build(ErrorApp.DataExpiredError)
+                        binding.errorApp.render(emptyUI)
+                    }
+                    else -> {
+                        binding.errorApp.hide()
+                        videogamesAdapter.submitList(list)
+                    }
+                }
             }
-            uiState.errorApp?.let {
-            }
-        })
+        }
     }
+
+
 
     private fun navigateToVideogameDetail(videogameId: Int) {
         findNavController().navigate(
