@@ -1,17 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/setting"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollSettings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/button_padding_vertical"
+    tools:context=".features.setting.presentation.SettingFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/containerSettings"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setting"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:showDividers="middle">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_large">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_person"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/TitleDevelopers"
+                style="@style/AppTitleOptionSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/desarrolladores" />
+        </LinearLayout>
+
+        <!-- Recursos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_large">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_archive"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/TitleResources"
+                style="@style/AppTitleOptionSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/recursos" />
+        </LinearLayout>
+
+        <!-- Email de contacto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_large">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_email"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/TitleContact"
+                style="@style/AppTitleOptionSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/email" />
+
+            <TextView
+                android:id="@+id/ContactMail"
+                style="@style/AppDescriptionOptionSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="email"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/mail" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_large">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_info"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/AppVersion"
+                style="@style/AppTitleOptionSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                tools:text="@string/setting" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

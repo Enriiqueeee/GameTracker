@@ -44,4 +44,17 @@
         <item name="backgroundTint">?attr/colorPrimary</item>
     </style>
 
+    <style name="AppTitleSectionSettings" parent="TextAppearance.GameTracker.Title">
+        <item name="android:layout_marginTop">@dimen/margin_large</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+    </style>
+
+    <style name="AppTitleOptionSettings" parent="TextAppearance.GameTracker.Subtitle">
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+    </style>
+
+    <style name="AppDescriptionOptionSettings" parent="TextAppearance.GameTracker.Body">
+        <item name="android:layout_marginBottom">@dimen/margin_medium</item>
+    </style>
+
 </resources>

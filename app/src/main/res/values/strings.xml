@@ -27,5 +27,11 @@
     <string name="title_error_unknown">Error desconocido</string>
     <string name="description_error_unknown">Se ha producido un error desconocido en la aplicación.
      Por favor, vuelve a intentarlo</string>
+    <string name="desarrolladores">Desarrolladores</string>
+    <string name="recursos">Recursos</string>
+    <string name="email">Email de contacto</string>
+    <string name="mail">"Kikiarenas46@gmail.com"</string>
+    <string name="version">Versión Android\n%1$s</string>
+
 
 </resources>
