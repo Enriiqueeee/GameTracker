@@ -1,17 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/setting"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollSettings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/button_padding_vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/containerSettings"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setting"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:spacing="@dimen/button_padding_vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/TitleDevelopers"
+            style="@style/AppTitleOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/desarrolladores" />
+
+        <TextView
+            android:id="@+id/DescDevelopers"
+            style="@style/AppDescriptionOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="-" />
+
+        <TextView
+            android:id="@+id/TitleResources"
+            style="@style/AppTitleOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/recursos" />
+
+        <TextView
+            android:id="@+id/DescResources"
+            style="@style/AppDescriptionOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="—" />
+
+        <TextView
+            android:id="@+id/TitleContact"
+            style="@style/AppTitleOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/email" />
+
+        <TextView
+            android:id="@+id/ContactMail"
+            style="@style/AppDescriptionOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="email" />
+
+        <TextView
+            android:id="@+id/AppVersion"
+            style="@style/AppTitleOptionSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            tools:text="Versión" />
+
+    </LinearLayout>
+</ScrollView>
