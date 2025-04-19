@@ -30,10 +30,8 @@ class SettingFragment : Fragment() {
 
         binding.apply {
             TitleDevelopers.text = requireContext().getString(R.string.desarrolladores)
-            DescDevelopers.text = null
 
             TitleResources.text = requireContext().getString(R.string.recursos)
-            DescResources.text = null
 
             TitleContact.text = requireContext().getString(R.string.email)
 
