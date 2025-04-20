@@ -1,4 +1,4 @@
-package edu.iesam.gametracker.features.setting.domain
+package edu.iesam.gametracker.features.setting.domain.developer
 
 class Developer (
     val id: Int,

@@ -1,4 +1,4 @@
-package edu.iesam.gametracker.features.setting.data.local
+package edu.iesam.gametracker.features.setting.data.developer.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

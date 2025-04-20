@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseApp
 import edu.iesam.gametracker.app.di.AppModule
 import edu.iesam.gametracker.app.di.LocalModule
 import edu.iesam.gametracker.app.di.RemoteModule
-import edu.iesam.gametracker.features.setting.di.SettingModule
+import edu.iesam.gametracker.features.setting.di.DeveloperModule
 import edu.iesam.gametracker.features.videogames.di.VideogamesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -24,7 +24,7 @@ class GameTrackerApp : Application() {
                 RemoteModule().module,
                 LocalModule().module,
                 VideogamesModule().module,
-                SettingModule().module
+                DeveloperModule().module
             )
         }
     }
