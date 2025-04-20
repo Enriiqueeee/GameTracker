@@ -1,4 +1,4 @@
-package edu.iesam.gametracker.features.setting
+package edu.iesam.gametracker.features.setting.data
 
 import edu.iesam.gametracker.features.setting.data.local.SettingDbLocalDataSource
 import edu.iesam.gametracker.features.setting.data.remote.SettingFirebaseDataSource
@@ -13,7 +13,17 @@ class SettingDataRepository(
     private val local: SettingDbLocalDataSource
 ) : SettingRepository {
     override suspend fun getDevelopers(): Result<List<Developer>> {
-        TODO("Not yet implemented")
+        val developersLocal = local.findAllDevelopers()
+        if (developersLocal.isSuccess) {
+            val localDevelopers = developersLocal.getOrNull()
+            if (!localDevelopers.isNullOrEmpty()) {
+                return Result.success(localDevelopers)
+            }
+        }
+        val developersFromRemote = remote.getDevelopers()
+        return developersFromRemote.onSuccess {
+            local.saveDevelopers(it)
+        }
     }
 
     override suspend fun getResources(): Result<List<Resource>> {

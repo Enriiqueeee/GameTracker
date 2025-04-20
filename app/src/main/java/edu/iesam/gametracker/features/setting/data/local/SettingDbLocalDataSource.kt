@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.features.setting.data.local
 
+import edu.iesam.gametracker.features.setting.domain.Developer
 import edu.iesam.gametracker.features.setting.domain.Resource
 import org.koin.core.annotation.Single
 
@@ -17,6 +18,21 @@ class SettingDbLocalDataSource(private val settingDao: SettingDao) {
 
     suspend fun saveResources(resources: List<Resource>) {
         val resourceList = resources.map {
+            it.toEntity()
+        }
+    }
+
+    suspend fun findAllDevelopers(): Result<List<Developer>> {
+        val developers = settingDao.findAllDevelopers()
+        return if (developers.isEmpty()) {
+            Result.success(emptyList())
+        } else {
+            Result.success(developers.map { it.toDomain() })
+        }
+    }
+
+    suspend fun saveDevelopers(developers: List<Developer>) {
+        val developerList = developers.map {
             it.toEntity()
         }
     }

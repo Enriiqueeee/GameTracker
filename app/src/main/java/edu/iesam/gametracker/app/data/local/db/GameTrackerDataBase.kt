@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import edu.iesam.gametracker.app.data.local.db.converters.Converters
+import edu.iesam.gametracker.features.setting.data.local.DeveloperEntity
 import edu.iesam.gametracker.features.setting.data.local.ResourceEntity
 import edu.iesam.gametracker.features.setting.data.local.SettingDao
 import edu.iesam.gametracker.features.videogames.data.local.db.FavoriteDao
@@ -15,9 +16,10 @@ import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesEntity
     entities = [
         VideogamesEntity::class,
         FavoriteEntity::class,
-        ResourceEntity::class
+        ResourceEntity::class,
+        DeveloperEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 

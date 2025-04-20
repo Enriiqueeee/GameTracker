@@ -13,4 +13,11 @@ interface SettingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveResources(vararg resources: ResourceEntity)
+
+    @Query("SELECT * FROM $DEVELOPER_TABLE")
+    suspend fun findAllDevelopers(): List<DeveloperEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveDevelopers(vararg developers: DeveloperEntity)
+
 }
