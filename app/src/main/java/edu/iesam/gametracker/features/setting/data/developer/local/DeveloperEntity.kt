@@ -12,4 +12,5 @@ const val DEVELOPER_ID = "id"
 class DeveloperEntity(
     @PrimaryKey @ColumnInfo(name = DEVELOPER_ID) val id: Int,
     @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "github_url") val githubUrl: String
 )

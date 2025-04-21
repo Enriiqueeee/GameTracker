@@ -8,17 +8,19 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import edu.iesam.gametracker.app.presentation.AppIntent
 import edu.iesam.gametracker.databinding.FragmentBottomSheetDeveloperBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DeveloperBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class DeveloperBottomSheetDialogFragment : BottomSheetDialogFragment(){
 
     private var _binding: FragmentBottomSheetDeveloperBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: DeveloperViewModel by viewModel()
     private val developerAdapter by lazy {
-        DeveloperAdapter {
+        DeveloperAdapter { developer ->
+            openWebApp(developer.githubUrl)
         }
     }
 
@@ -68,6 +70,11 @@ class DeveloperBottomSheetDialogFragment : BottomSheetDialogFragment() {
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, observer)
+    }
+
+    private fun openWebApp(url: String) {
+        val webApp = AppIntent(requireContext())
+        webApp.openWebPage(url)
     }
 
     override fun onDestroyView() {

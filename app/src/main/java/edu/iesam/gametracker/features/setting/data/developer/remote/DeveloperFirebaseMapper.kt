@@ -7,5 +7,6 @@ fun DeveloperFirebaseModel.toModel(): Developer {
     return Developer(
         this.id,
         this.name,
+        this.githubUrl
     )
 }
