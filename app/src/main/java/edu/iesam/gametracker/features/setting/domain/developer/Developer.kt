@@ -1,6 +1,6 @@
 package edu.iesam.gametracker.features.setting.domain.developer
 
-class Developer (
+data class Developer (
     val id: Int,
     val name: String,
     val avatar: String

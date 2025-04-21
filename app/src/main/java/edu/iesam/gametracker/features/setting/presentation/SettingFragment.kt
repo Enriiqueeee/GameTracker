@@ -1,17 +1,17 @@
+// src/main/java/edu/iesam/gametracker/features/setting/presentation/SettingFragment.kt
 package edu.iesam.gametracker.features.setting.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.databinding.FragmentSettingBinding
-import androidx.core.net.toUri
+import edu.iesam.gametracker.features.setting.presentation.developer.DeveloperBottomSheetDialogFragment
 
-class SettingFragment : Fragment() {
+class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
@@ -29,24 +29,25 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            TitleDevelopers.text = requireContext().getString(R.string.desarrolladores)
-
-            TitleResources.text = requireContext().getString(R.string.recursos)
-
-            TitleContact.text = requireContext().getString(R.string.email)
-
-            ContactMail.text = requireContext().getString(R.string.mail)
-            ContactMail.apply {
-                setText(R.string.mail)
-                setOnClickListener { openEmailClient() }
+            TitleDevelopers.setOnClickListener {
+                DeveloperBottomSheetDialogFragment()
+                    .show(childFragmentManager, "DEV_BOTTOM_SHEET")
             }
+
+            TitleResources.setOnClickListener {
+
+            }
+
+            // Resto de tu setup (email, versión…)
+            TitleContact.text = getString(R.string.email)
+            ContactMail.text  = getString(R.string.mail)
+            ContactMail.setOnClickListener { openEmailClient() }
 
             AppVersion.text = getString(
                 R.string.version,
                 getAppVersion()
             )
         }
-
     }
 
     private fun getAppVersion(): String =
@@ -54,17 +55,14 @@ class SettingFragment : Fragment() {
             .getPackageInfo(requireContext().packageName, 0)
             .versionName.toString()
 
-
     private fun openEmailClient() {
         val email = getString(R.string.mail)
         val intent = Intent(Intent.ACTION_SENDTO, "mailto:$email".toUri())
             .putExtra(Intent.EXTRA_SUBJECT, "Contacto desde GameTracker")
-
         if (intent.resolveActivity(requireContext().packageManager) != null)
             startActivity(intent)
         else
-            Toast.makeText(
-                requireContext(),
+            Toast.makeText(requireContext(),
                 "No hay cliente de correo instalado",
                 Toast.LENGTH_SHORT
             ).show()
