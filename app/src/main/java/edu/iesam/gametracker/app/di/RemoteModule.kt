@@ -1,5 +1,6 @@
 package edu.iesam.gametracker.app.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.annotation.ComponentScan
@@ -38,5 +39,10 @@ class RemoteModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit
+    }
+
+    @Single
+    fun provideFirestore(): FirebaseFirestore{
+        return FirebaseFirestore.getInstance()
     }
 }

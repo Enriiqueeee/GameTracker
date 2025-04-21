@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.navigation.safeargs.kotlin)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.service)
 }
 
 val localProps = Properties().apply {
@@ -73,6 +74,8 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.skeletonlayout)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.android)
