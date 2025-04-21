@@ -2,7 +2,6 @@ package edu.iesam.gametracker.features.setting.presentation.developer
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import edu.iesam.gametracker.app.extensions.loadUrl
 import edu.iesam.gametracker.databinding.ViewItemBottomSheetDeveloperBinding
 import edu.iesam.gametracker.features.setting.domain.developer.Developer
 
@@ -15,7 +14,6 @@ class DeveloperViewHolder(
 
     fun bind(developer: Developer) {
         binding.apply {
-            binding.imageDeveloper.loadUrl(developer.avatar)
             binding.nameDeveloper.text = developer.name
             view.setOnClickListener { onItemClick(developer) }
         }

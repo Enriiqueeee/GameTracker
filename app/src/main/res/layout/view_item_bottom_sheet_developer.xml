@@ -7,23 +7,19 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_marginTop="8sp"
         android:layout_marginBottom="8sp"
         app:cardCornerRadius="25sp">
 
-        <ImageView
-            android:id="@+id/image_developer"
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            tools:src="@tools:sample/avatars" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/name_developer"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            tools:text="Name of dev"/>
+            android:textAlignment="center"
+            tools:text="Names"/>
 
     </androidx.cardview.widget.CardView>
 

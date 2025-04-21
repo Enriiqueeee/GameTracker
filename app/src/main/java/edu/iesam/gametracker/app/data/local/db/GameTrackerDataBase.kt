@@ -17,7 +17,7 @@ import edu.iesam.gametracker.features.videogames.data.local.db.VideogamesEntity
         FavoriteEntity::class,
         DeveloperEntity::class
     ],
-    version = 11,
+    version = 12,
     exportSchema = false
 )
 
