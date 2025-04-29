@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.databinding.FragmentSettingBinding
 import edu.iesam.gametracker.features.setting.presentation.developer.DeveloperBottomSheetDialogFragment
+import edu.iesam.gametracker.features.setting.presentation.resources.ResourcesBottomSheetDialogFragment
 
 class SettingFragment : Fragment(R.layout.fragment_setting) {
 
@@ -35,10 +36,11 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
             }
 
             TitleResources.setOnClickListener {
-
+                ResourcesBottomSheetDialogFragment()
+                    .show(childFragmentManager, "resources_bottom_sheet")
             }
 
-            // Resto de tu setup (email, versión…)
+
             TitleContact.text = getString(R.string.email)
             ContactMail.text  = getString(R.string.mail)
             ContactMail.setOnClickListener { openEmailClient() }

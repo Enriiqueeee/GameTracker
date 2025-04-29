@@ -31,7 +31,7 @@ class VideogamesViewHolder(private val view: View) : RecyclerView.ViewHolder(vie
             )
             rating.text = videogame.rating.toString()
             val genreNames = videogame.genres.joinToString(", ") { it.name }
-            genres.text = root.context.getString(R.string.genres, genreNames)
+            genres.text = view.context.getString(R.string.genres, genreNames)
 
             btnsave.setImageResource(
                 if (videogameFeed.isFavorite) R.drawable.ic_favorite_click

@@ -4,11 +4,11 @@ import edu.iesam.gametracker.features.setting.domain.developer.Developer
 import org.koin.core.annotation.Single
 
 @Single
-class DeveloperDbLocalDataSource(private val settingDao: DeveloperDao) {
+class DeveloperDbLocalDataSource(private val developerDao: DeveloperDao) {
 
 
     suspend fun findAllDevelopers(): Result<List<Developer>> {
-        val developers = settingDao.findAllDevelopers()
+        val developers = developerDao.findAllDevelopers()
         return if (developers.isEmpty()) {
             Result.success(emptyList())
         } else {
@@ -20,5 +20,6 @@ class DeveloperDbLocalDataSource(private val settingDao: DeveloperDao) {
         val developerList = developers.map {
             it.toEntity()
         }
+        developerDao.saveDevelopers(*developerList.toTypedArray())
     }
 }
