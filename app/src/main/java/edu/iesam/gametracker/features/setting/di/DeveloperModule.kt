@@ -19,7 +19,7 @@ class DeveloperModule {
 
 
     @Single
-    fun provideResourceDao(db: GameTrackerDataBase): DeveloperDao {
-        return db.settingDao()
+    fun provideDeveloperDao(db: GameTrackerDataBase): DeveloperDao {
+        return db.developerDao()
     }
 }
