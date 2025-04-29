@@ -2,7 +2,7 @@
     <string name="app_name">GameTracker</string>
 
     <string name="videogames">Videogames</string>
-    <string name="played">Played</string>
+    <string name="recommended">Recommended</string>
     <string name="setting">Setting</string>
     <string name="save">Guardar</string>
     <string name="playtime">Horas de Juego: %sH</string>
