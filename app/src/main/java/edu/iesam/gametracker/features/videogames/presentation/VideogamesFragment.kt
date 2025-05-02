@@ -8,7 +8,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.faltenreich.skeletonlayout.Skeleton
@@ -21,6 +20,7 @@ import edu.iesam.gametracker.app.presentation.ContentShare
 import edu.iesam.gametracker.app.presentation.hide
 import edu.iesam.gametracker.app.presentation.views.ErrorAppUIFactory
 import edu.iesam.gametracker.databinding.FragmentVideogamesBinding
+import edu.iesam.gametracker.features.videogames.domain.GetVideogamesUseCase
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -41,6 +41,9 @@ class VideogamesFragment : Fragment() {
 
     private val contentShare: ContentShare by inject()
     private val errorFactory: ErrorAppUIFactory by inject()
+
+    private var allVideogames: List<GetVideogamesUseCase.VideoGameFeed> = emptyList()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,28 +96,35 @@ class VideogamesFragment : Fragment() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.toolbar_menu, menu)
+
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+                searchView.queryHint = getString(R.string.search_hint)
+
+                searchView.setOnQueryTextListener(object :
+                    androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        filterList(query)
+                        return true
+                    }
+                    override fun onQueryTextChange(newText: String): Boolean {
+                        filterList(newText)
+                        return true
+                    }
+                })
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_save -> {
-                        if (!isShowingFavorites) {
-                            isShowingFavorites = true
-                            menuItem.setIcon(R.drawable.ic_favorite_click)
-                            viewModel.loadFavorites()
-                        } else {
-                            isShowingFavorites = false
-                            menuItem.setIcon(R.drawable.ic_save)
-                            viewModel.loadGames()
-                        }
                         true
                     }
-
                     else -> false
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
+
 
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
@@ -138,19 +148,23 @@ class VideogamesFragment : Fragment() {
                     list == null -> {
                         binding.errorApp.hide()
                     }
+
                     list.isEmpty() -> {
                         val emptyUI = errorFactory.build(ErrorApp.DataExpiredError)
                         binding.errorApp.render(emptyUI)
                     }
+
                     else -> {
                         binding.errorApp.hide()
-                        videogamesAdapter.submitList(list)
+                        uiState.videogames.let { list ->
+                            allVideogames = list
+                            videogamesAdapter.submitList(list)
+                        }
                     }
                 }
             }
         }
     }
-
 
 
     private fun navigateToVideogameDetail(videogameId: Int) {
@@ -183,6 +197,18 @@ class VideogamesFragment : Fragment() {
             contentShare.shareContent(videoGame.name, text)
         }
     }
+
+    private fun filterList(text: String) {
+        val filtered = if (text.isBlank()) {
+            allVideogames
+        } else {
+            allVideogames.filter {
+                it.videogame.name.contains(text.trim(), ignoreCase = true)
+            }
+        }
+        videogamesAdapter.submitList(filtered)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
