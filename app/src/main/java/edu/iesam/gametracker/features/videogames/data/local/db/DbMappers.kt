@@ -2,7 +2,7 @@ package edu.iesam.gametracker.features.videogames.data.local.db
 
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 
-fun Videogame.toEntity(): VideogamesEntity {
+fun Videogame.toEntity(orderIndex: Int): VideogamesEntity {
     return VideogamesEntity(
         this.id,
         this.name,
@@ -11,7 +11,8 @@ fun Videogame.toEntity(): VideogamesEntity {
         this.rating,
         this.playtime,
         this.description,
-        this.genres
+        this.genres,
+        orderIndex = orderIndex
     )
 }
 

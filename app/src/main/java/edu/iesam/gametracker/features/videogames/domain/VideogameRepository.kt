@@ -8,4 +8,5 @@ interface VideogameRepository {
     suspend fun removeFavorite(videogame: Videogame): Result<Unit>
     suspend fun toggleFavorite(videogame: Videogame): Result<Unit>
     suspend fun getRecommendedVideogames(): Result<List<Videogame>>
+    suspend fun searchVideogames(query: String): Result<List<Videogame>>
 }

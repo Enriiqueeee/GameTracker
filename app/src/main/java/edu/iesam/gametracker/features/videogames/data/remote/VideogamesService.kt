@@ -21,5 +21,14 @@ interface VideogamesService {
         @Path("id") videogameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY
     ): Response<VideogamesApiModel>
+
+    @GET("games")
+    suspend fun searchVideogames(
+        @Query("search")   query: String,
+        @Query("key")      apiKey: String = BuildConfig.API_KEY,
+        @Query("page")     page: Int = 1,
+        @Query("page_size") pageSize: Int = 50
+    ): Response<RawgResponse>
+
 }
 

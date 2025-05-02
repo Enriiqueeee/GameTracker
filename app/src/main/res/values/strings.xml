@@ -33,5 +33,7 @@
     <string name="mail">"Kikiarenas46@gmail.com"</string>
     <string name="version">Versión Android\n%1$s</string>
 
+    <string name="search_hint">Buscar juegos…</string>
+
 
 </resources>

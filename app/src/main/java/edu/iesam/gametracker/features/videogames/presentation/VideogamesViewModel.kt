@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import edu.iesam.gametracker.app.domain.ErrorApp
 import edu.iesam.gametracker.features.videogames.domain.GetFavoriteVideogamesUseCase
 import edu.iesam.gametracker.features.videogames.domain.GetVideogamesUseCase
+import edu.iesam.gametracker.features.videogames.domain.SearchVideogamesUseCase
 import edu.iesam.gametracker.features.videogames.domain.ToggleFavoriteVideogameUseCase
 import edu.iesam.gametracker.features.videogames.domain.Videogame
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,8 @@ import org.koin.core.context.loadKoinModules
 class VideogamesViewModel(
     private val getVideogamesUseCase: GetVideogamesUseCase,
     private val getFavoriteVideogamesUseCase: GetFavoriteVideogamesUseCase,
-    private val toggleFavoriteVideogameUseCase: ToggleFavoriteVideogameUseCase
+    private val toggleFavoriteVideogameUseCase: ToggleFavoriteVideogameUseCase,
+    private val searchVideogamesUseCase: SearchVideogamesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableLiveData<UiState>()
@@ -58,6 +60,20 @@ class VideogamesViewModel(
             } else {
                 loadGames()
             }
+        }
+    }
+
+    fun searchGames(query: String) {
+        _uiState.postValue(_uiState.value!!.copy(isLoading = true))
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = searchVideogamesUseCase(query)
+            _uiState.postValue(
+                UiState(
+                    isLoading = false,
+                    videogames = result.getOrNull(),
+                    errorApp = result.exceptionOrNull() as? ErrorApp
+                )
+            )
         }
     }
 }

@@ -3,12 +3,13 @@ package edu.iesam.gametracker.features.videogames.presentation
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.faltenreich.skeletonlayout.Skeleton
@@ -35,15 +36,14 @@ class VideogamesFragment : Fragment() {
     private val viewModel: VideogamesViewModel by viewModel()
 
     private var isShowingFavorites = false
-    private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
-
     private lateinit var skeleton: Skeleton
-
     private val contentShare: ContentShare by inject()
     private val errorFactory: ErrorAppUIFactory by inject()
+    private val videogamesAdapter = VideogamesAdapter()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentVideogamesBinding.inflate(inflater, container, false)
@@ -55,12 +55,10 @@ class VideogamesFragment : Fragment() {
         binding.apply {
             videogameList.layoutManager = LinearLayoutManager(requireContext())
             videogameList.adapter = videogamesAdapter
-
             skeleton = videogameList.applySkeleton(R.layout.view_videogames_item, 8)
 
             swiperefresh.setOnRefreshListener {
-                if (!isShowingFavorites) viewModel.loadGames()
-                else viewModel.loadFavorites()
+                if (isShowingFavorites) viewModel.loadFavorites() else viewModel.loadGames()
             }
         }
 
@@ -80,7 +78,6 @@ class VideogamesFragment : Fragment() {
             .findViewById<MaterialToolbar>(R.id.toolbar)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
@@ -93,20 +90,34 @@ class VideogamesFragment : Fragment() {
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.toolbar_menu, menu)
+
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
+                searchView.queryHint = getString(R.string.search_hint)
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        viewModel.searchGames(query.trim())
+                        searchView.clearFocus()
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String): Boolean {
+                        val q = newText.trim()
+                        if (q.isBlank()) viewModel.loadGames() else viewModel.searchGames(q)
+                        return true
+                    }
+                })
+
+                val favItem = menu.findItem(R.id.action_save)
+                updateFavIcon(favItem)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_save -> {
-                        if (!isShowingFavorites) {
-                            isShowingFavorites = true
-                            menuItem.setIcon(R.drawable.ic_favorite_click)
-                            viewModel.loadFavorites()
-                        } else {
-                            isShowingFavorites = false
-                            menuItem.setIcon(R.drawable.ic_save)
-                            viewModel.loadGames()
-                        }
+                        isShowingFavorites = !isShowingFavorites
+                        if (isShowingFavorites) viewModel.loadFavorites() else viewModel.loadGames()
+                        updateFavIcon(menuItem)
                         true
                     }
 
@@ -116,41 +127,36 @@ class VideogamesFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun updateFavIcon(item: MenuItem) {
+        val iconRes = if (isShowingFavorites) R.drawable.ic_favorite_click else R.drawable.ic_save
+        item.icon = ContextCompat.getDrawable(requireContext(), iconRes)
+    }
+
     private fun setupObservers() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-
-            if (binding.swiperefresh.isRefreshing) {
-                binding.swiperefresh.isRefreshing = uiState.isLoading
-            }
-
+            binding.swiperefresh.isRefreshing = uiState.isLoading
             if (uiState.isLoading) {
                 skeleton.showSkeleton()
+                binding.errorApp.hide()
+                return@observe
             } else {
                 skeleton.showOriginal()
             }
 
             uiState.errorApp?.let { error ->
-                val errorUI = errorFactory.build(error)
-                binding.errorApp.render(errorUI)
-            } ?: run {
-                val list = uiState.videogames
-                when {
-                    list == null -> {
-                        binding.errorApp.hide()
-                    }
-                    list.isEmpty() -> {
-                        val emptyUI = errorFactory.build(ErrorApp.DataExpiredError)
-                        binding.errorApp.render(emptyUI)
-                    }
-                    else -> {
-                        binding.errorApp.hide()
-                        videogamesAdapter.submitList(list)
-                    }
-                }
+                binding.errorApp.render(errorFactory.build(error))
+                return@observe
+            }
+
+            val list = uiState.videogames.orEmpty()
+            if (list.isEmpty()) {
+                binding.errorApp.render(errorFactory.build(ErrorApp.DataExpiredError))
+            } else {
+                binding.errorApp.hide()
+                videogamesAdapter.submitList(list)
             }
         }
     }
-
 
 
     private fun navigateToVideogameDetail(videogameId: Int) {
@@ -160,25 +166,27 @@ class VideogamesFragment : Fragment() {
     }
 
     private fun shareVideogame(videoGame: Videogame, bmp: Bitmap?) {
-        val text = "${videoGame.name}\n${videoGame.released}"
+        val text = "${'$'}{videoGame.name}\n${'$'}{videoGame.released}"
         if (bmp != null) {
             File(requireContext().cacheDir, "shared_images").apply { mkdirs() }
-                .resolve("share_${videoGame.id}.png")
+                .resolve("share_${'$'}{videoGame.id}.png")
                 .also { file ->
                     FileOutputStream(file).use { out ->
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+                        bmp.compress(
+                            Bitmap.CompressFormat.PNG,
+                            100,
+                            out
+                        )
                     }
                 }
                 .let { file ->
                     FileProvider.getUriForFile(
                         requireContext(),
-                        "${requireContext().packageName}.fileprovider",
+                        "${'$'}{requireContext().packageName}.fileprovider",
                         file
                     )
                 }
-                .also { uri ->
-                    contentShare.shareContentWithImage(videoGame.name, text, uri)
-                }
+                .also { uri -> contentShare.shareContentWithImage(videoGame.name, text, uri) }
         } else {
             contentShare.shareContent(videoGame.name, text)
         }
@@ -187,5 +195,9 @@ class VideogamesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        (requireActivity() as MainActivity)
+            .findViewById<MaterialToolbar>(R.id.toolbar)
+            .menu
+            .clear()
     }
 }
