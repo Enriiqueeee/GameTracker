@@ -68,4 +68,16 @@ class VideogamesDataRepository(
             db.toggleFavorite(videogame)
             return Result.success(Unit)
     }
+
+    override suspend fun getRecommendedVideogames(): Result<List<Videogame>> {
+        val favorites = db.getFavoriteVideogames().getOrNull() ?: return Result.success(emptyList())
+        val genres = favorites.flatMap { it.genres.map { genre -> genre.name } }.distinct()
+
+        val allGames = db.findAll().getOrNull() ?: return Result.success(emptyList())
+        val recommended = allGames.filter { game ->
+            game.genres.any { it.name in genres } && favorites.none { it.id == game.id }
+        }
+
+        return Result.success(recommended)
+    }
 }

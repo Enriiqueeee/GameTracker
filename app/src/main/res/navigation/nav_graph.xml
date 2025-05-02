@@ -28,9 +28,9 @@
 
     <fragment
         android:id="@+id/played"
-        android:name="edu.iesam.gametracker.features.played.presentation.PlayedFragment"
-        android:label="@string/played"
-        tools:layout="@layout/fragment_played" />
+        android:name="edu.iesam.gametracker.features.recommendFragment.presentation.RecommendedFragment"
+        android:label="@string/recommended"
+        tools:layout="@layout/fragment_recommended" />
 
     <fragment
         android:id="@+id/setting"
