@@ -1,4 +1,4 @@
-package edu.iesam.gametracker.features.recommendFragment.presentation
+package edu.iesam.gametracker.features.recommend.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

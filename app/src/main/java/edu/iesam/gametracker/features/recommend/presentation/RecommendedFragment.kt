@@ -1,4 +1,4 @@
-package edu.iesam.gametracker.features.recommendFragment.presentation
+package edu.iesam.gametracker.features.recommend.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import com.faltenreich.skeletonlayout.Skeleton
 import com.faltenreich.skeletonlayout.applySkeleton
 import edu.iesam.gametracker.R
 import edu.iesam.gametracker.app.domain.ErrorApp
+import edu.iesam.gametracker.app.presentation.ContentShare
 import edu.iesam.gametracker.app.presentation.hide
 import edu.iesam.gametracker.app.presentation.views.ErrorAppUIFactory
 import edu.iesam.gametracker.databinding.FragmentRecommendedBinding
@@ -26,6 +27,8 @@ class RecommendedFragment : Fragment() {
     private val videogamesAdapter: VideogamesAdapter = VideogamesAdapter()
     private lateinit var skeleton: Skeleton
     private val errorFactory: ErrorAppUIFactory by inject()
+    private val contentShare: ContentShare by inject()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +49,13 @@ class RecommendedFragment : Fragment() {
             swiperefresh.setOnRefreshListener {
                 viewModel.loadRecommendations()
             }
-        }
+
+            videogamesAdapter.apply {
+                setOnShareClickListener { videoGame, bitmap ->
+                    contentShare.shareVideogame(videoGame, bitmap)
+                }
+            }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
