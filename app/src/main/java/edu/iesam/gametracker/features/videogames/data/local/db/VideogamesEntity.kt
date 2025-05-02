@@ -18,6 +18,7 @@ class VideogamesEntity(
     @ColumnInfo(name = "rating") val rating: Double,
     @ColumnInfo(name = "playtime") val playtime: Int,
     @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "genres") val genres: List<Genre>
+    @ColumnInfo(name = "genres") val genres: List<Genre>,
+    @ColumnInfo(name = "order_index") val orderIndex: Int
 )
 
