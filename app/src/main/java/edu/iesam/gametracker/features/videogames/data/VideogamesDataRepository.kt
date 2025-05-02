@@ -80,4 +80,19 @@ class VideogamesDataRepository(
 
         return Result.success(recommended)
     }
+
+    override suspend fun searchVideogames(query: String): Result<List<Videogame>> {
+        val local = db.findAll().getOrNull().orEmpty()
+        val filtered = local.filter {
+            it.name.contains(query.trim(), ignoreCase = true)
+        }
+        if (filtered.isNotEmpty()) {
+            return Result.success(filtered)
+        }
+
+        return remote.searchVideogames(query).onSuccess { remoteList ->
+            db.saveAll(remoteList)
+        }
+    }
+
 }
